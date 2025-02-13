@@ -189,15 +189,20 @@ const TimeDiff = ({
         <CardTitle>Time Difference</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4 w-fit">
-        <p className="font-bold text-2xl">
-          {sign}
-          {timeString}
-        </p>
-        <p>
-          The time in {timeZone} is currently {timeString}
-          {diffMinutes > 0 ? " ahead of " : " behind "}
-          the time in {localTimezone}.
-        </p>
+        {!timeZone && <p>Timezone not selected</p>}
+        {timeZone && (
+          <p className="font-bold text-2xl">
+            {sign}
+            {timeString}
+          </p>
+        )}
+        {timeZone && (
+          <p>
+            The time in {timeZone} is currently {timeString}
+            {diffMinutes > 0 ? " ahead of " : " behind "}
+            the time in {localTimezone}.
+          </p>
+        )}
       </CardContent>
     </Card>
   );
