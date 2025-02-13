@@ -84,7 +84,7 @@ export const DateRangePicker = ({
                 {formatTzDate(date.from)} - {formatTzDate(date.to)}
               </>
             ) : (
-              date.from.toString()
+              formatTzDate(date.from)
             )
           ) : (
             <span>Pick a date</span>

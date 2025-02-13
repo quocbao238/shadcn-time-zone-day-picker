@@ -14,7 +14,6 @@ import {
   subMonths,
 } from "date-fns";
 import { TZDate } from "react-day-picker";
-import { z } from "zod";
 import {
   MONDAY,
   QuickOptions,
@@ -208,19 +207,6 @@ export const getQuickOptionByRanges = (
     })?.value ?? QuickOptions.CUSTOM
   );
 };
-
-export function getDefaultsVariableSchema<Schema extends z.AnyZodObject>(
-  schema: Schema
-) {
-  return Object.fromEntries(
-    Object.entries(schema.shape).map(([key, value]) => {
-      if (value instanceof z.ZodDefault)
-        return [key, value._def.defaultValue()];
-      return [key, undefined];
-    })
-  );
-}
-
 export const formatTzTime = (date: Date, timeZone?: string) =>
   date.toLocaleTimeString("en-US", {
     hour: "2-digit",

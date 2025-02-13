@@ -8,11 +8,7 @@
     "plugin:@tanstack/eslint-plugin-query/recommended",
     "plugin:next-on-pages/recommended"
   ],
-  "plugins": [
-    "tailwindcss",
-    "next-on-pages",
-    "@typescript-eslint"
-  ],
+  "plugins": ["tailwindcss", "next-on-pages", "@typescript-eslint"],
   "parserOptions": {
     "project": "./tsconfig.json"
   },
@@ -24,37 +20,23 @@
     "react-hooks/exhaustive-deps": 0,
     "no-console": "warn",
     "eqeqeq": "error",
-    "semi": [
-      "error",
-      "never"
-    ],
-    "linebreak-style": [
-      "error",
-      "unix"
-    ],
+    "semi": ["error", "never"],
+    "linebreak-style": ["error", "unix"],
     "no-multiple-empty-lines": [
       "error",
       {
         "max": 1
       }
     ],
-    "object-curly-spacing": [
-      "error",
-      "always"
-    ]
+    "object-curly-spacing": ["error", "always"]
   },
   "settings": {
     "tailwindcss": {
-      "callees": [
-        "cn",
-        "cva"
-      ],
+      "callees": ["cn", "cva"],
       "config": "tailwind.config.ts"
     },
     "next": {
-      "rootDir": [
-        "apps/*/"
-      ]
+      "rootDir": ["apps/*/"]
     }
   },
   "overrides": [

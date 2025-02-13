@@ -79,6 +79,7 @@ export default function Page() {
             timeZone={timeZone}
           />
         </div>
+        <DateConverter />
       </div>
     </div>
   );
@@ -202,6 +203,41 @@ const TimeDiff = ({
             {diffMinutes > 0 ? " ahead of " : " behind "}
             the time in {localTimezone}.
           </p>
+        )}
+      </CardContent>
+    </Card>
+  );
+};
+
+const DateConverter = ({ timeZone }: { timeZone?: string }) => {
+  const [dateString, setDateString] = useState("2025-02-12T11:00:00.000Z");
+  const date = new Date(dateString);
+  const tzDate = new TZDate(date, timeZone);
+
+  return (
+    <Card className="w-full md:w-[45%]">
+      <CardHeader>
+        <CardTitle>Date Converter (2025-02-12T11:00:00.000Z)</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="flex flex-col gap-4">
+          <p className="font-semibold">Input String:</p>
+          <input
+            type="text"
+            value={dateString}
+            onChange={(e) => setDateString(e.target.value)}
+            className="w-full p-2 border rounded bg-muted"
+          />
+        </div>
+        <div>
+          <p className="font-semibold">Local Time:</p>
+          <TimeInfo time={date} />
+        </div>
+        {timeZone && (
+          <div>
+            <p className="font-semibold">{timeZone} Time:</p>
+            <TimeInfo time={tzDate} />
+          </div>
         )}
       </CardContent>
     </Card>
