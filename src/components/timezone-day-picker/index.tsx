@@ -40,7 +40,7 @@ const RangePicker = ({
       );
       setListOptions(clearList);
     }
-  }, [initQuickOptions, listOptions]);
+  }, [initQuickOptions]);
 
   useEffect(() => {
     if (!value) return;
@@ -51,7 +51,7 @@ const RangePicker = ({
       return;
     }
     setQuickFilter(filter);
-  }, [value, tStartOfWeek, timeZone, initQuickOptions]);
+  }, [value]);
 
   return (
     <div className="flex gap-2">
