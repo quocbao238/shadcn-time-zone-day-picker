@@ -322,7 +322,6 @@ function Nav({
     }
     goToMonth(previousMonth);
     onPrevClick?.(previousMonth);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [previousMonth, goToMonth]);
 
   const handleNextClick = React.useCallback(() => {
@@ -342,7 +341,6 @@ function Nav({
       return;
     }
     goToMonth(nextMonth);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     onNextClick?.(nextMonth);
   }, [goToMonth, nextMonth]);
   return (
