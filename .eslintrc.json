@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json.schemastore.org/eslintrc",
+  "root": true,
+  "extends": [
+    "next/core-web-vitals",
+    "prettier",
+    "plugin:tailwindcss/recommended",
+    "plugin:@tanstack/eslint-plugin-query/recommended",
+    "plugin:next-on-pages/recommended"
+  ],
+  "plugins": [
+    "tailwindcss",
+    "next-on-pages",
+    "@typescript-eslint"
+  ],
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "rules": {
+    "next-on-pages/no-unsupported-configs": "warn",
+    "@next/next/no-html-link-for-pages": "off",
+    "tailwindcss/no-custom-classname": "off",
+    "tailwindcss/classnames-order": "off",
+    "react-hooks/exhaustive-deps": 0,
+    "no-console": "warn",
+    "eqeqeq": "error",
+    "semi": [
+      "error",
+      "never"
+    ],
+    "linebreak-style": [
+      "error",
+      "unix"
+    ],
+    "no-multiple-empty-lines": [
+      "error",
+      {
+        "max": 1
+      }
+    ],
+    "object-curly-spacing": [
+      "error",
+      "always"
+    ]
+  },
+  "settings": {
+    "tailwindcss": {
+      "callees": [
+        "cn",
+        "cva"
+      ],
+      "config": "tailwind.config.ts"
+    },
+    "next": {
+      "rootDir": [
+        "apps/*/"
+      ]
+    }
+  },
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx"],
+      "parser": "@typescript-eslint/parser"
+    },
+    {
+      "files": ["*.{ts,tsx}"],
+      "excludedFiles": ["./components/ui/**/*.{ts,tsx}"],
+      "rules": {
+        "@typescript-eslint/no-explicit-any": "error",
+        "@typescript-eslint/no-unnecessary-type-assertion": "error"
+      }
+    }
+  ]
+}
