@@ -80,7 +80,7 @@ const RangePicker = ({
           </SelectGroup>
         </SelectContent>
       </Select>
-      <DateRangePicker value={value} onChange={onChange} />
+      <DateRangePicker timeZone={timeZone} value={value} onChange={onChange} />
     </div>
   );
 };

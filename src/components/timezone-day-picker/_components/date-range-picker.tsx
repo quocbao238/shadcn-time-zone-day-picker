@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import {
   differenceInDays,
   endOfDay,
-  endOfToday,
   isAfter,
   isBefore,
   isSameDay,
@@ -18,7 +17,7 @@ import {
 } from "@/components/ui/popover";
 import { TRangePicker } from "../_data/schema";
 import { CalendarIcon } from "lucide-react";
-import { formatTzDate } from "../_data/helpers";
+import { formatTzDate, getNewDate } from "../_data/helpers";
 
 export const DateRangePicker = ({
   value,
@@ -100,7 +99,7 @@ export const DateRangePicker = ({
           selected={date}
           disabled={[
             {
-              after: endOfToday(),
+              after: endOfDay(getNewDate(timeZone)),
             },
           ]}
           onDayClick={(day) => handleDateChange(day)}
