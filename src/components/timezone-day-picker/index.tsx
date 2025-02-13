@@ -40,6 +40,7 @@ const RangePicker = ({
       );
       setListOptions(clearList);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initQuickOptions]);
 
   useEffect(() => {
@@ -51,6 +52,7 @@ const RangePicker = ({
       return;
     }
     setQuickFilter(filter);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
   return (
