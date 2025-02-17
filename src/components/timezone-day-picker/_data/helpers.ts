@@ -207,13 +207,17 @@ export const getQuickOptionByRanges = (
     })?.value ?? QuickOptions.CUSTOM
   );
 };
-export const formatTzTime = (date: Date, timeZone?: string) =>
-  date.toLocaleTimeString("en-US", {
+export const formatTzTime = (date: Date, timeZone?: string) => {
+  if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
+    return "-";
+  }
+  return date.toLocaleTimeString("en-US", {
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
     timeZone,
   });
+};
 
 export const formatTzDate = (date: Date, timeZone?: string) => {
   if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
