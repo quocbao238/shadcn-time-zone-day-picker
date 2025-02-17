@@ -35,15 +35,20 @@ export function TimeZoneCard({
   );
 }
 
-export const TimeInfo = ({ time }: { time: Date }) => (
-  <div className="flex flex-col gap-1">
-    <div className="space-y-1">
-      <p className="font-medium text-primary">{time.toString()}</p>
-      <p className="text-sm text-muted-foreground">{time.toUTCString()}</p>
-      <p className="text-sm text-muted-foreground">
-        Unix:{" "}
-        <code className="rounded bg-muted px-2 py-1">{getUnixTime(time)}</code>
-      </p>
+export const TimeInfo = ({ time }: { time: Date }) => {
+  if (!time) return null;
+  return (
+    <div className="flex flex-col gap-1">
+      <div className="space-y-1">
+        <p className="font-medium text-primary">{time.toString()}</p>
+        <p className="text-sm text-muted-foreground">{time.toUTCString()}</p>
+        <p className="text-sm text-muted-foreground">
+          Unix:{" "}
+          <code className="rounded bg-muted px-2 py-1">
+            {getUnixTime(time)}
+          </code>
+        </p>
+      </div>
     </div>
-  </div>
-);
+  );
+};
