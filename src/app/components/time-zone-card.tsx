@@ -15,6 +15,14 @@ export function TimeZoneCard({
   currentDate: Date;
   timeZone?: string;
 }) {
+  if (
+    !currentDate ||
+    !(currentDate instanceof Date) ||
+    isNaN(currentDate.getTime())
+  ) {
+    return "-";
+  }
+
   return (
     <Card className="w-full ">
       <CardHeader>
