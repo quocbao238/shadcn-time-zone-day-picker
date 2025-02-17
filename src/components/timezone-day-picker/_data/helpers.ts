@@ -235,3 +235,50 @@ export const getTzDateByUnixTime = (
     ? new TZDate(fromUnixTime(unixTime), timeZone)
     : fromUnixTime(unixTime);
 };
+
+export function getGMTOffset(date: Date) {
+  const offset = date.getTimezoneOffset(); // Get offset in minutes
+  const hours = Math.abs(Math.floor(offset / 60));
+  const minutes = Math.abs(offset % 60);
+  const sign = offset > 0 ? "-" : "+"; // Inverted because getTimezoneOffset() returns the opposite
+
+  return `GMT${sign}${String(hours).padStart(2, "0")}:${String(
+    minutes
+  ).padStart(2, "0")}`;
+}
+
+export function getGMTOffsetByTimezone(timezone: string) {
+  try {
+    const formatter = new Intl.DateTimeFormat("en-US", {
+      timeZone: timezone,
+      hour12: false,
+      timeZoneName: "longOffset",
+    });
+
+    const parts = formatter.formatToParts(getNewDate(timezone));
+    const offsetPart = parts.find((part) => part.type === "timeZoneName");
+
+    if (!offsetPart) return "Invalid Timezone";
+
+    let offset = offsetPart.value.replace("UTC", "GMT");
+
+    // Ensure offset is always in (GMT±HH:MM) format
+    /*
+    /([+-])(\d)$/ → This is a regular expression (regex):
+    ([+-]) → Matches the + or - sign (indicating the offset direction).
+    (\d)$ → Matches a single digit (a single-digit hour, like GMT+9 or GMT-5).
+    "$10$2:00" → This formats the offset as GMT±0H:00:
+    $1 → Inserts the + or - sign.
+    0$2 → Adds a 0 before the single-digit hour.
+    :00 → Adds :00 to the end.
+    */
+
+    console.log(offset);
+
+    return offset.includes(":")
+      ? offset
+      : offset.replace(/([+-])(\d)$/, "$10$2:00");
+  } catch (error) {
+    return "Invalid Timezone";
+  }
+}

@@ -16,7 +16,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { formatTimezoneOffset, timezones } from "../_data/timezone";
+import { timezones } from "../_data/timezone";
 
 export const TimezoneSelector = ({
   value,
@@ -30,6 +30,9 @@ export const TimezoneSelector = ({
   const buttonRef = useRef(null);
   const buttonSize = useSize(buttonRef.current);
   const [open, setOpen] = useState(false);
+  const selectedTimezone = timezones.find(
+    (timezone) => timezone.label.toLowerCase() === value?.toLowerCase()
+  );
   return (
     <Popover open={open} onOpenChange={(open) => setOpen(open)}>
       <PopoverTrigger asChild>
@@ -43,10 +46,7 @@ export const TimezoneSelector = ({
           <div className="flex w-full items-center justify-between text-start">
             <div className="block flex-1">
               {value
-                ? timezones.find(
-                    (timezone) =>
-                      timezone.label.toLowerCase() === value.toLowerCase()
-                  )?.label
+                ? `${selectedTimezone?.label} (${selectedTimezone?.offset})`
                 : "Select Timezone"}
             </div>
             <ChevronsUpDown className="size-3 opacity-50" />
@@ -84,7 +84,7 @@ export const TimezoneSelector = ({
                       (value ?? "").toLowerCase(),
                   })}
                 >
-                  ({formatTimezoneOffset(timezone.offset)}) {timezone.label}
+                  ({timezone.offset}) {timezone.label}
                   <Check
                     className={cn(
                       "size-4",
