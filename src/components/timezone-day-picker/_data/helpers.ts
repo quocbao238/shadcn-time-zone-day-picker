@@ -226,3 +226,12 @@ export const formatTzDate = (date: Date, timeZone?: string) =>
 export const getNewDate = (timeZone?: string) => {
   return timeZone ? new TZDate(new Date(), timeZone) : new Date();
 };
+
+export const getTzDateByUnixTime = (
+  unixTime: number,
+  timeZone?: string | null
+) => {
+  return timeZone
+    ? new TZDate(fromUnixTime(unixTime), timeZone)
+    : fromUnixTime(unixTime);
+};

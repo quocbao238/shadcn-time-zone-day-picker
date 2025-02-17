@@ -28,6 +28,8 @@ export const DateRangePicker = ({
   onChange: (value: { from: Date; to: Date }) => void;
   timeZone?: string;
 }) => {
+
+  
   const [date, setDate] = useState<TRangePicker | undefined>(value);
 
   useEffect(() => {

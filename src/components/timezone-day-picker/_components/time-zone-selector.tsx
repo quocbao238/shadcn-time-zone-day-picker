@@ -47,7 +47,7 @@ export const TimezoneSelector = ({
                     (timezone) =>
                       timezone.label.toLowerCase() === value.toLowerCase()
                   )?.label
-                : "Select Merchant Timezone"}
+                : "Select Timezone"}
             </div>
             <ChevronsUpDown className="size-3 opacity-50" />
           </div>

@@ -1,91 +1,23 @@
 "use client";
+
 import { useEffect, useState } from "react";
-import { getUnixTime } from "date-fns";
 import { TZDate } from "react-day-picker";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  fullQuickOptions,
-  QuickOptions,
-  TRangePicker,
-} from "@/components/timezone-day-picker/_data/schema";
-import {
-  formatTzDate,
-  formatTzTime,
-  getDateRangeByQuickOption,
-} from "@/components/timezone-day-picker/_data/helpers";
-import { Separator } from "@/components/ui/separator";
-import RangePicker from "@/components/timezone-day-picker";
+import { useTimezoneStore } from "@/hooks/use-timezone";
 import { TimezoneSelector } from "@/components/timezone-day-picker/_components/time-zone-selector";
+import { TimeZoneCard } from "./components/time-zone-card";
+import FullScreenLoading from "@/components/full-screen-loading";
 
-import { Checkbox } from "@/components/ui/checkbox";
 export default function Page() {
-  const [timeZone, setTimeZone] = useState<string | undefined>(
-    "America/Chicago"
-  );
-  const [checked, setChecked] = useState(false);
-  const initRangeDate = getDateRangeByQuickOption(
-    QuickOptions.TODAY,
-    undefined,
-    timeZone
-  );
-  const [date, setDate] = useState<TRangePicker>(initRangeDate);
-
-  useEffect(() => {
-    setDate(getDateRangeByQuickOption(QuickOptions.TODAY, undefined, timeZone));
-  }, [timeZone]);
-
   return (
-    <div className="flex h-full w-full flex-col items-start justify-center space-y-4 p-4">
-      <div className="space-y-6 w-full">
-        <TimeNow timeZone={timeZone} />
-        <div className="flex flex-wrap w-full gap-4">
-          <RangePicker
-            initQuickOptions={fullQuickOptions}
-            value={date}
-            onChange={setDate}
-            timeZone={timeZone}
-          />
-          <TimezoneSelector
-            disabled={checked}
-            value={timeZone}
-            onChange={setTimeZone}
-          />
-
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              checked={checked}
-              id="checkbox"
-              onCheckedChange={(value: boolean) => {
-                setChecked(value);
-                if (value) {
-                  setTimeZone(undefined);
-                }
-              }}
-            />
-            <label
-              htmlFor="terms"
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              Use Computer Timezone (
-              {Intl.DateTimeFormat().resolvedOptions().timeZone})
-            </label>
-          </div>
-        </div>
-        <div className="flex flex-row gap-6">
-          <TimeZoneCard title="From" currentDate={date.from} />
-          <TimeZoneCard
-            title={"To"}
-            currentDate={date.to}
-            timeZone={timeZone}
-          />
-        </div>
-        <DateConverter />
-      </div>
+    <div className="p-6 w-full">
+      <TimeNow />
     </div>
   );
 }
 
-const TimeNow = ({ timeZone }: { timeZone?: string }) => {
+const TimeNow = () => {
+  const { timeZone, checked, setTimeZone, hydrated } = useTimezoneStore();
   const [now, setNow] = useState(new Date());
 
   useEffect(() => {
@@ -98,61 +30,27 @@ const TimeNow = ({ timeZone }: { timeZone?: string }) => {
 
   const nowTz = new TZDate(new Date(), timeZone);
   return (
-    <div className="flex flex-wrap gap-6 w-full">
-      <TimeZoneCard title="Local Time" currentDate={now} />
-      <TimeZoneCard
-        title={timeZone ?? "Local Time"}
-        currentDate={nowTz}
-        timeZone={timeZone}
+    <div className="flex flex-col gap-4">
+      {!hydrated && <FullScreenLoading />}
+      <TimezoneSelector
+        disabled={checked}
+        value={timeZone}
+        onChange={setTimeZone}
       />
+      <div className="grid  gird-1 md:grid-cols-2 gap-4 w-full">
+        <TimeZoneCard title="Local Time" currentDate={now} />
+        <TimeZoneCard
+          title={timeZone ?? "Local Time"}
+          currentDate={nowTz}
+          timeZone={timeZone}
+        />
+      </div>
       <div className="w-full">
         <TimeDiff tzDate={nowTz} localTime={now} timeZone={timeZone} />
       </div>
     </div>
   );
 };
-
-const TimeInfo = ({ time }: { time: Date }) => (
-  <div className="flex flex-col gap-1">
-    <div className="space-y-1">
-      <p className="font-medium text-primary">{time.toString()}</p>
-      <p className="text-sm text-muted-foreground">{time.toUTCString()}</p>
-      <p className="text-sm text-muted-foreground">
-        Unix:{" "}
-        <code className="rounded bg-muted px-2 py-1">{getUnixTime(time)}</code>
-      </p>
-    </div>
-  </div>
-);
-
-function TimeZoneCard({
-  title,
-  currentDate,
-  timeZone,
-}: {
-  title: string;
-  currentDate: Date;
-  timeZone?: string;
-}) {
-  return (
-    <Card className="w-full md:w-[45%]">
-      <CardHeader>
-        <CardTitle>{title}</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4 w-fit">
-        <div className="text-4xl font-bold">
-          {formatTzTime(currentDate, timeZone)}
-        </div>
-        <div className="text-lg">{formatTzDate(currentDate, timeZone)}</div>
-
-        <Separator />
-        <div className="flex flex-col gap-2">
-          <TimeInfo time={currentDate} />
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
 
 const TimeDiff = ({
   tzDate,
@@ -185,7 +83,7 @@ const TimeDiff = ({
     .join(" and ");
 
   return (
-    <Card className="w-full md:w-[45%]">
+    <Card className="w-full">
       <CardHeader>
         <CardTitle>Time Difference</CardTitle>
       </CardHeader>
@@ -203,41 +101,6 @@ const TimeDiff = ({
             {diffMinutes > 0 ? " ahead of " : " behind "}
             the time in {localTimezone}.
           </p>
-        )}
-      </CardContent>
-    </Card>
-  );
-};
-
-const DateConverter = ({ timeZone }: { timeZone?: string }) => {
-  const [dateString, setDateString] = useState("2025-02-12T11:00:00.000Z");
-  const date = new Date(dateString);
-  const tzDate = new TZDate(date, timeZone);
-
-  return (
-    <Card className="w-full md:w-[45%]">
-      <CardHeader>
-        <CardTitle>Date Converter (2025-02-12T11:00:00.000Z)</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="flex flex-col gap-4">
-          <p className="font-semibold">Input String:</p>
-          <input
-            type="text"
-            value={dateString}
-            onChange={(e) => setDateString(e.target.value)}
-            className="w-full p-2 border rounded bg-muted"
-          />
-        </div>
-        <div>
-          <p className="font-semibold">Local Time:</p>
-          <TimeInfo time={date} />
-        </div>
-        {timeZone && (
-          <div>
-            <p className="font-semibold">{timeZone} Time:</p>
-            <TimeInfo time={tzDate} />
-          </div>
         )}
       </CardContent>
     </Card>
