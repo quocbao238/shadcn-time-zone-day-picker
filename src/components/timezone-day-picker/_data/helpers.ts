@@ -216,7 +216,9 @@ export const formatTzTime = (date: Date, timeZone?: string) =>
   });
 
 export const formatTzDate = (date: Date, timeZone?: string) => {
-  if (!date) return "";
+  if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
+    return "-";
+  }
   return date.toLocaleDateString("en-US", {
     month: "short",
     year: "numeric",
