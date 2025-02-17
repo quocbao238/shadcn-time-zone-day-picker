@@ -215,13 +215,15 @@ export const formatTzTime = (date: Date, timeZone?: string) =>
     timeZone,
   });
 
-export const formatTzDate = (date: Date, timeZone?: string) =>
-  date.toLocaleDateString("en-US", {
+export const formatTzDate = (date: Date, timeZone?: string) => {
+  if (!date) return "";
+  return date.toLocaleDateString("en-US", {
     month: "short",
     year: "numeric",
     day: "numeric",
     timeZone,
   });
+};
 
 export const getNewDate = (timeZone?: string) => {
   return timeZone ? new TZDate(new Date(), timeZone) : new Date();
