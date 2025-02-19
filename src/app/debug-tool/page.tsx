@@ -1,6 +1,6 @@
 "use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { TZDate } from "react-day-picker";
 import { TimeInfo } from "../components/time-zone-card";
 import { useTimezoneStore } from "@/hooks/use-timezone";
@@ -51,20 +51,24 @@ const UnixTimeConverter = () => {
           <Input
             type="number"
             value={unixTime}
-            onChange={(e) => setUnixTime(parseInt(e.target.value))}
+            onChange={(e) => {
+              if (e.target.value === "") return setUnixTime(0);
+              return setUnixTime(parseInt(e.target.value));
+            }}
           />
         </div>
-
         <div>
-          <p className="font-semibold">Local Time:</p>
-          <TimeInfo time={date} />
-        </div>
-        {timeZone && (
           <div>
-            <p className="font-semibold">{timeZone} Time:</p>
-            <TimeInfo time={tzDate} />
+            <p className="font-semibold">Local Time:</p>
+            <TimeInfo time={date} />
           </div>
-        )}
+          {timeZone && (
+            <div>
+              <p className="font-semibold">{timeZone} Time:</p>
+              <TimeInfo time={tzDate} />
+            </div>
+          )}
+        </div>
       </CardContent>
     </Card>
   );
@@ -73,8 +77,32 @@ const UnixTimeConverter = () => {
 const ISO8601Converter = () => {
   const { timeZone } = useTimezoneStore();
   const [dateString, setDateString] = useState("2025-02-12T11:00:00.000Z");
-  const date = new Date(dateString);
-  const tzDate = new TZDate(date, timeZone);
+  const [isValidDate, setIsValidDate] = useState(true);
+
+  // Validate and create date objects
+  const date = useMemo(() => {
+    try {
+      const parsedDate = new Date(dateString);
+      if (isNaN(parsedDate.getTime())) {
+        setIsValidDate(false);
+        return null;
+      }
+      setIsValidDate(true);
+      return parsedDate;
+    } catch {
+      setIsValidDate(false);
+      return null;
+    }
+  }, [dateString]);
+
+  const tzDate = useMemo(() => {
+    if (!date || !timeZone) return null;
+    try {
+      return new TZDate(date, timeZone);
+    } catch {
+      return null;
+    }
+  }, [date, timeZone]);
 
   return (
     <Card className="w-full">
@@ -93,17 +121,32 @@ const ISO8601Converter = () => {
             type="text"
             value={dateString}
             onChange={(e) => setDateString(e.target.value)}
+            className={!isValidDate ? "border-red-500" : ""}
           />
+          {!isValidDate && (
+            <p className="text-sm text-red-500">
+              Please enter a valid ISO 8601 date
+            </p>
+          )}
         </div>
 
         <div>
           <p className="font-semibold">Local Time:</p>
-          <TimeInfo time={date} />
+          {date ? (
+            <TimeInfo time={date} />
+          ) : (
+            <p className="text-muted-foreground">Invalid date format</p>
+          )}
         </div>
+
         {timeZone && (
           <div>
             <p className="font-semibold">{timeZone} Time:</p>
-            <TimeInfo time={tzDate} />
+            {tzDate ? (
+              <TimeInfo time={tzDate} />
+            ) : (
+              <p className="text-muted-foreground">Invalid date format</p>
+            )}
           </div>
         )}
       </CardContent>
