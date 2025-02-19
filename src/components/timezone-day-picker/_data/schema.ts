@@ -50,7 +50,6 @@ const tRangePickerSchema = z.object({
   to: z.coerce.date(),
 });
 
-
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const tQuickOptionSchema = z.object({
   value: z.nativeEnum(QuickOptions),
@@ -65,6 +64,8 @@ const propsRangePickerSchema = z.object({
   onChange: z.function().args(tRangePickerSchema).returns(z.void()),
   timeZone: z.string().optional(),
 });
+
+export type RangeDayType = "day" | "month" | "year";
 
 export type PropsRangePicker = z.infer<typeof propsRangePickerSchema>;
 export type TRangePicker = z.infer<typeof tRangePickerSchema>;

@@ -17,6 +17,7 @@ import { TZDate } from "react-day-picker";
 import {
   MONDAY,
   QuickOptions,
+  RangeDayType,
   startOfWeekSchema,
   TQuickOption,
   TRangePicker,
@@ -287,4 +288,37 @@ export function getGMTOffsetByTimezone(timezone: string) {
   } catch (error) {
     return "Invalid Timezone";
   }
+}
+
+export function getTzRangeByType({
+  type,
+  date,
+  timeZone,
+}: {
+  type: RangeDayType;
+  date: Date;
+  timeZone?: string;
+}): TRangePicker {
+  const day = timeZone ? new TZDate(date, timeZone) : date;
+  if (type === "day") {
+    return {
+      from: startOfDay(day),
+      to: endOfDay(day),
+    };
+  }
+  if (type === "month") {
+    return {
+      from: startOfMonth(day),
+      to: endOfMonth(day),
+    };
+  }
+
+  if (type === "year") {
+    return {
+      from: startOfYear(day),
+      to: endOfYear(day),
+    };
+  }
+
+  throw new Error("Invalid range type");
 }
