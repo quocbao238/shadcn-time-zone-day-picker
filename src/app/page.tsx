@@ -9,15 +9,31 @@ import { TimeZoneCard } from "./components/time-zone-card";
 import FullScreenLoading from "@/components/full-screen-loading";
 
 export default function Page() {
+  const { timeZone, checked, setTimeZone, hydrated } = useTimezoneStore();
+
   return (
     <div className="p-6 w-full">
-      <TimeNow />
+      <TimeNow
+        timeZone={timeZone}
+        checked={checked}
+        setTimeZone={setTimeZone}
+        hydrated={hydrated}
+      />
     </div>
   );
 }
 
-const TimeNow = () => {
-  const { timeZone, checked, setTimeZone, hydrated } = useTimezoneStore();
+const TimeNow = ({
+  timeZone,
+  checked,
+  setTimeZone,
+  hydrated,
+}: {
+  timeZone?: string;
+  checked: boolean;
+  setTimeZone: (timeZone: string) => void;
+  hydrated?: boolean;
+}) => {
   const [now, setNow] = useState(new Date());
 
   useEffect(() => {

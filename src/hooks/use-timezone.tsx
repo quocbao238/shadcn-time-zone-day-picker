@@ -10,6 +10,7 @@ export interface TimezoneState {
   hydrated?: boolean;
   timeZone: string | undefined;
   checked: boolean;
+  quickOptions: QuickOptions;
   date: TRangePicker;
 }
 
@@ -18,12 +19,14 @@ export interface TimezoneActions {
   setTimeZone: (timeZone: string | undefined) => void;
   setChecked: (checked: boolean) => void;
   setDate: (date: TRangePicker) => void;
+  setQuickOptions: (quickOptions: QuickOptions) => void;
 }
 
 const initialState: TimezoneState = {
   timeZone: "America/Chicago",
   checked: false,
   hydrated: false,
+  quickOptions: QuickOptions.LAST_7_DAYS,
   date: getDateRangeByQuickOption(
     QuickOptions.TODAY,
     undefined,
@@ -39,6 +42,7 @@ export const useTimezoneStore = create<TimezoneState & TimezoneActions>()(
       setChecked: (checked) => set({ checked }),
       setDate: (date) => set({ date }),
       setHasHydrated: (hydrated) => set({ hydrated }),
+      setQuickOptions: (quickOptions) => set({ quickOptions }),
     }),
     {
       name: "timezone",

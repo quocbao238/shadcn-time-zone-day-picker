@@ -33,7 +33,6 @@ export function TimeZoneCard({
           {formatTzTime(currentDate, timeZone)}
         </div>
         <div className="text-lg">{formatTzDate(currentDate, timeZone)}</div>
-
         <Separator />
         <div className="flex flex-col gap-2">
           <TimeInfo time={currentDate} />

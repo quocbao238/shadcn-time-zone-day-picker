@@ -164,9 +164,6 @@ function Calendar({
     props.disabledClassName
   );
   const _hiddenClassName = cn("invisible flex-1", props.hiddenClassName);
-
-  console.log(timeZone);
-
   return (
     <DayPicker
       timeZone={timeZone}

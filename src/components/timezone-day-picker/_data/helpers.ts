@@ -281,8 +281,6 @@ export function getGMTOffsetByTimezone(timezone: string) {
     :00 → Adds :00 to the end.
     */
 
-    console.log(offset);
-
     return offset.includes(":")
       ? offset
       : offset.replace(/([+-])(\d)$/, "$10$2:00");
