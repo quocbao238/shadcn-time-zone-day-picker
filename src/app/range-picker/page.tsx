@@ -29,6 +29,8 @@ export default function Page() {
     return <FullScreenLoading />;
   }
 
+  console.log("rebuild");
+
   return (
     <div className="p-6 flex flex-col gap-4">
       {!hydrated && <FullScreenLoading />}
@@ -56,6 +58,9 @@ export default function Page() {
               setChecked(value);
               if (value) {
                 setTimeZone(undefined);
+                setDate(
+                  getDateRangeByQuickOption(quickOptions, undefined, undefined)
+                );
               }
             }}
           />

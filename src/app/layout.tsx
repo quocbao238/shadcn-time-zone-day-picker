@@ -31,8 +31,20 @@ export default function RootLayout({
       >
         <SidebarProvider>
           <AppSidebar />
-          <SidebarTrigger />
-          {children}
+          <div className="flex flex-col relative">
+            <div className="px-6 py-4 sticky top-0 bg-background shadow-sm">
+              <div className="flex flex-row justify-between gap-4">
+                <SidebarTrigger className="h-8 w-8 rounded-md border" />
+                <div className="w-full h-8 flex justify-center items-center">
+                  <p className="text-primary font-bold  md:hidden">
+                    Shadcn Timezone Day Picker
+                  </p>
+                </div>
+                <div className="w-8" />
+              </div>
+            </div>
+            {children}
+          </div>
         </SidebarProvider>
       </body>
     </html>

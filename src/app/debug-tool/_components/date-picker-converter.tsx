@@ -19,8 +19,9 @@ import {
   getNewDate,
   getTzRangeByType,
 } from "@/components/timezone-day-picker/_data/helpers";
-import { endOfDay, getUnixTime, isValid, parse } from "date-fns";
+import { endOfDay, formatDate, getUnixTime, isValid, parse } from "date-fns";
 import { Input } from "@/components/ui/input";
+import { useMask } from "@react-input/mask";
 
 const EpochRange = ({
   rangeDate,
@@ -111,14 +112,16 @@ export default function DatePickerConverter() {
       date: selectedDate ?? new Date(),
     })
   );
+  const [inputValue, setInputValue] = useState<string>("");
 
-  // Hold the month in state to control the calendar when the input changes
-  const [month, setMonth] = useState(new Date());
-  // Hold the input value in state
-  const [inputValue, setInputValue] = useState("");
+  const maskInput = {
+    mask: "__/__/____",
+    replacement: { _: /\d/ },
+  };
+  const inputRef = useMask(maskInput);
 
   useEffect(() => {
-    if (selectedDate)
+    if (selectedDate) {
       setRangeDate(
         getTzRangeByType({
           type: rangeType,
@@ -126,19 +129,22 @@ export default function DatePickerConverter() {
           date: selectedDate,
         })
       );
+      setInputValue(formatDate(selectedDate, "MM/dd/yyyy"));
+    }
   }, [selectedDate, rangeType, timeZone]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value); // keep the input value in sync
-    const parsedDate = parse(e.target.value, "MM/dd/yyyy", new Date());
-
-    if (isValid(parsedDate)) {
-      setSelectedDate(parsedDate);
-      setMonth(parsedDate);
-    } else {
-      setSelectedDate(undefined);
+    const value = e.target.value.replace(/_/g, ""); // Remove mask characters
+    setInputValue(value);
+    if (value.length === 10) {
+      const parsedDate = parse(value, "MM/dd/yyyy", getNewDate(timeZone));
+      if (isValid(parsedDate)) {
+        setSelectedDate(parsedDate);
+      }
     }
   };
+
+  console.log("date", selectedDate);
 
   return (
     <Card className="w-full">
@@ -151,16 +157,19 @@ export default function DatePickerConverter() {
         <div className="flex flex-col xl:flex-row gap-4">
           <div className="flex flex-col gap-4">
             <Input
+              ref={inputRef}
               style={{ fontSize: "inherit" }}
               id={inputId}
               type="text"
               value={inputValue}
-              placeholder="MM/dd/yyyy"
+              placeholder="MM/DD/YYYY"
               onChange={handleInputChange}
+              className="font-mono" // Use monospace font for better mask alignment
             />
             <Calendar
               mode="single"
               timeZone={timeZone}
+              defaultMonth={selectedDate}
               selected={selectedDate}
               disabled={[
                 {
