@@ -52,7 +52,7 @@ export type CalendarProps = DayPickerProps & {
 
 type NavView = "days" | "years";
 
-/**
+/**a
  * A custom calendar component built on top of react-day-picker.
  * @param props The props for the calendar.
  * @default yearRange 12

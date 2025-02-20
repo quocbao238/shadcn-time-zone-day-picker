@@ -19,84 +19,10 @@ import {
   getNewDate,
   getTzRangeByType,
 } from "@/components/timezone-day-picker/_data/helpers";
-import { endOfDay, formatDate, getUnixTime, isValid, parse } from "date-fns";
+import { formatDate, isValid, parse } from "date-fns";
 import { Input } from "@/components/ui/input";
 import { useMask } from "@react-input/mask";
-
-const EpochRange = ({
-  rangeDate,
-  type,
-}: {
-  rangeDate: TRangePicker;
-  type: RangeDayType;
-}) => {
-  return (
-    <div className="space-y-2">
-      <div className="flex flex-row gap-4 ">
-        <div className="space-y-2">
-          <p className="font-bold text-base">{`Start of ${type}`}</p>
-          <Separator />
-          <p className="text-muted-foreground">
-            Tz Time:{" "}
-            <span className="text-primary font-bold">
-              {rangeDate.from.toString()}
-            </span>
-          </p>
-
-          <p className="text-muted-foreground">
-            UTC Time:{" "}
-            <span className="text-primary font-bold">
-              {rangeDate.from.toUTCString()}
-            </span>
-          </p>
-          <p className="text-muted-foreground">
-            ISO Time:{" "}
-            <span className="text-primary font-bold">
-              {rangeDate.from.toISOString()}
-            </span>
-          </p>
-          <p className="text-muted-foreground">
-            Unix:{" "}
-            <span className="text-primary font-bold">
-              {getUnixTime(rangeDate.from)}
-            </span>
-          </p>
-        </div>
-        <Separator orientation="vertical" />
-
-        <div className="space-y-2">
-          <p className="font-bold text-base">{`End of ${type}`}</p>
-          <Separator />
-          <p className="text-muted-foreground">
-            Tz Time:{" "}
-            <span className="text-primary font-bold">
-              {rangeDate.to.toString()}
-            </span>
-          </p>
-
-          <p className="text-muted-foreground">
-            UTC Time:{" "}
-            <span className="text-primary font-bold">
-              {rangeDate.to.toUTCString()}
-            </span>
-          </p>
-          <p className="text-muted-foreground">
-            ISO Time:{" "}
-            <span className="text-primary font-bold">
-              {rangeDate.to.toISOString()}
-            </span>
-          </p>
-          <p className="text-muted-foreground">
-            Unix:{" "}
-            <span className="text-primary font-bold">
-              {getUnixTime(rangeDate.to)}
-            </span>
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-};
+import { EpochRange } from "./epoch-range";
 
 export default function DatePickerConverter() {
   const { timeZone } = useTimezoneStore();
@@ -104,6 +30,9 @@ export default function DatePickerConverter() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
     new Date()
   );
+  const [month, setMonth] = useState<Date | undefined>(selectedDate);
+  const [key, setKey] = useState(0);
+  const [validDate, setValidDate] = useState<boolean>(true);
   const [rangeType, setRangeType] = useState<RangeDayType>("day");
   const [rangeDate, setRangeDate] = useState<TRangePicker>(
     getTzRangeByType({
@@ -130,21 +59,34 @@ export default function DatePickerConverter() {
         })
       );
       setInputValue(formatDate(selectedDate, "MM/dd/yyyy"));
+      setMonth(selectedDate); // Update month when date changes
+      setKey((prev) => prev + 1);
     }
   }, [selectedDate, rangeType, timeZone]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/_/g, ""); // Remove mask characters
     setInputValue(value);
+    setValidDate(validateDate(value));
     if (value.length === 10) {
       const parsedDate = parse(value, "MM/dd/yyyy", getNewDate(timeZone));
       if (isValid(parsedDate)) {
         setSelectedDate(parsedDate);
       }
+    } else {
+      console.log("herre");
+
+      setSelectedDate(undefined);
     }
   };
 
-  console.log("date", selectedDate);
+  const validateDate = (date: string): boolean => {
+    if (date.length === 10) {
+      const parsedDate = parse(date, "MM/dd/yyyy", getNewDate(timeZone));
+      return isValid(parsedDate);
+    }
+    return false;
+  };
 
   return (
     <Card className="w-full">
@@ -166,18 +108,20 @@ export default function DatePickerConverter() {
               onChange={handleInputChange}
               className="font-mono" // Use monospace font for better mask alignment
             />
+            {!validDate && (
+              <p className="text-red-500 text-sm">Invalid date format</p>
+            )}
             <Calendar
+              key={key}
               mode="single"
               timeZone={timeZone}
-              defaultMonth={selectedDate}
               selected={selectedDate}
-              disabled={[
-                {
-                  after: endOfDay(getNewDate(timeZone)),
-                },
-              ]}
-              onDayClick={(date) => date && setSelectedDate(date)}
-              className="rounded-md border"
+              month={month}
+              onMonthChange={setMonth}
+              onDayClick={(date) => {
+                return date && setSelectedDate(date);
+              }}
+              className="rounded-md border w-full"
             />
           </div>
           <div className="flex flex-col items-start gap-4">
