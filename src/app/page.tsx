@@ -1,15 +1,15 @@
-"use client";
+'use client'
 
-import { useEffect, useState } from "react";
-import { TZDate } from "react-day-picker";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useTimezoneStore } from "@/hooks/use-timezone";
-import { TimezoneSelector } from "@/components/timezone-day-picker/_components/time-zone-selector";
-import { TimeZoneCard } from "./components/time-zone-card";
-import FullScreenLoading from "@/components/full-screen-loading";
+import { useEffect, useState } from 'react'
+import { TZDate } from 'react-day-picker'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { useTimezoneStore } from '@/hooks/use-timezone'
+import { TimezoneSelector } from '@/components/timezone-day-picker/_components/time-zone-selector'
+import { TimeZoneCard } from './components/time-zone-card'
+import FullScreenLoading from '@/components/full-screen-loading'
 
 export default function Page() {
-  const { timeZone, checked, setTimeZone, hydrated } = useTimezoneStore();
+  const { timeZone, checked, setTimeZone, hydrated } = useTimezoneStore()
 
   return (
     <div className="p-6 w-full">
@@ -20,7 +20,7 @@ export default function Page() {
         hydrated={hydrated}
       />
     </div>
-  );
+  )
 }
 
 const TimeNow = ({
@@ -29,22 +29,22 @@ const TimeNow = ({
   setTimeZone,
   hydrated,
 }: {
-  timeZone?: string;
-  checked: boolean;
-  setTimeZone: (timeZone: string) => void;
-  hydrated?: boolean;
+  timeZone?: string
+  checked: boolean
+  setTimeZone: (timeZone: string) => void
+  hydrated?: boolean
 }) => {
-  const [now, setNow] = useState(new Date());
+  const [now, setNow] = useState(new Date())
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setNow(new Date());
-    }, 1000);
+      setNow(new Date())
+    }, 1000)
 
-    return () => clearInterval(interval);
-  }, []);
+    return () => clearInterval(interval)
+  }, [])
 
-  const nowTz = new TZDate(new Date(), timeZone);
+  const nowTz = new TZDate(new Date(), timeZone)
   return (
     <div className="flex flex-col gap-4">
       {!hydrated && <FullScreenLoading />}
@@ -56,7 +56,7 @@ const TimeNow = ({
       <div className="grid  gird-1 md:grid-cols-2 gap-4 w-full">
         <TimeZoneCard title="Local Time" currentDate={now} />
         <TimeZoneCard
-          title={timeZone ?? "Local Time"}
+          title={timeZone ?? 'Local Time'}
           currentDate={nowTz}
           timeZone={timeZone}
         />
@@ -65,38 +65,38 @@ const TimeNow = ({
         <TimeDiff tzDate={nowTz} localTime={now} timeZone={timeZone} />
       </div>
     </div>
-  );
-};
+  )
+}
 
 const TimeDiff = ({
   tzDate,
   localTime,
   timeZone,
 }: {
-  tzDate: Date;
-  localTime: Date;
-  timeZone?: string;
+  tzDate: Date
+  localTime: Date
+  timeZone?: string
 }) => {
-  const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
   // Calculate difference
 
-  const targetOffset = tzDate.getTimezoneOffset();
-  const localOffset = localTime.getTimezoneOffset();
+  const targetOffset = tzDate.getTimezoneOffset()
+  const localOffset = localTime.getTimezoneOffset()
   // Calculate exact difference (keeping sign)
-  const diffMinutes = localOffset - targetOffset;
-  const sign = diffMinutes >= 0 ? "+" : "-";
+  const diffMinutes = localOffset - targetOffset
+  const sign = diffMinutes >= 0 ? '+' : '-'
 
   // Convert to hours and minutes
-  const absHours = Math.floor(Math.abs(diffMinutes) / 60);
-  const absMinutes = Math.abs(diffMinutes) % 60;
+  const absHours = Math.floor(Math.abs(diffMinutes) / 60)
+  const absMinutes = Math.abs(diffMinutes) % 60
 
   const timeString = [
     absHours > 0 ? `${absHours} hours` : null,
     absMinutes > 0 ? `${absMinutes} minutes` : null,
   ]
     .filter(Boolean)
-    .join(" and ");
+    .join(' and ')
 
   return (
     <Card className="w-full">
@@ -114,11 +114,11 @@ const TimeDiff = ({
         {timeZone && (
           <p>
             The time in {timeZone} is currently {timeString}
-            {diffMinutes > 0 ? " ahead of " : " behind "}
+            {diffMinutes > 0 ? ' ahead of ' : ' behind '}
             the time in {localTimezone}.
           </p>
         )}
       </CardContent>
     </Card>
-  );
-};
+  )
+}

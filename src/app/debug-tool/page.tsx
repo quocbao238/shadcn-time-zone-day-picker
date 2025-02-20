@@ -1,13 +1,13 @@
-"use client";
-import { useTimezoneStore } from "@/hooks/use-timezone";
-import FullScreenLoading from "@/components/full-screen-loading";
-import { TimezoneSelector } from "@/components/timezone-day-picker/_components/time-zone-selector";
-import { UnixTimeConverter } from "./_components/unix-time-converter";
-import { ISO8601Converter } from "./_components/iso8061-converter";
-import DatePickerConverter from "./_components/date-picker-converter";
+'use client'
+import { useTimezoneStore } from '@/hooks/use-timezone'
+import FullScreenLoading from '@/components/full-screen-loading'
+import { TimezoneSelector } from '@/components/timezone-day-picker/_components/time-zone-selector'
+import { UnixTimeConverter } from './_components/unix-time-converter'
+import { ISO8601Converter } from './_components/iso8061-converter'
+import DatePickerConverter from './_components/date-picker-converter'
 
 export default function Page() {
-  const { timeZone, hydrated, setTimeZone } = useTimezoneStore();
+  const { timeZone, hydrated, setTimeZone } = useTimezoneStore()
 
   return (
     <div className="flex flex-col gap-4 p-6 w-full">
@@ -23,5 +23,5 @@ export default function Page() {
         <DatePickerConverter />
       </div>
     </div>
-  );
+  )
 }

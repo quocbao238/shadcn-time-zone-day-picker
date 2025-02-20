@@ -17,6 +17,7 @@
     "@next/next/no-html-link-for-pages": "off",
     "tailwindcss/no-custom-classname": "off",
     "tailwindcss/classnames-order": "off",
+    "tailwindcss/enforces-shorthand": "off",
     "react-hooks/exhaustive-deps": 0,
     "no-console": "warn",
     "eqeqeq": "error",
@@ -28,7 +29,8 @@
         "max": 1
       }
     ],
-    "object-curly-spacing": ["error", "always"]
+    "object-curly-spacing": ["error", "always"],
+    "tailwindcss/no-unnecessary-arbitrary-value": "off"
   },
   "settings": {
     "tailwindcss": {

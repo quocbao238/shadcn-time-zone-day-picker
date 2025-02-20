@@ -1,38 +1,38 @@
-import { getDateRangeByQuickOption } from "@/components/timezone-day-picker/_data/helpers";
+import { getDateRangeByQuickOption } from '@/components/timezone-day-picker/_data/helpers'
 import {
   QuickOptions,
   TRangePicker,
-} from "@/components/timezone-day-picker/_data/schema";
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
+} from '@/components/timezone-day-picker/_data/schema'
+import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 
 export interface TimezoneState {
-  hydrated?: boolean;
-  timeZone: string | undefined;
-  checked: boolean;
-  quickOptions: QuickOptions;
-  date: TRangePicker;
+  hydrated?: boolean
+  timeZone: string | undefined
+  checked: boolean
+  quickOptions: QuickOptions
+  date: TRangePicker
 }
 
 export interface TimezoneActions {
-  setHasHydrated: (hydrated: boolean) => void;
-  setTimeZone: (timeZone: string | undefined) => void;
-  setChecked: (checked: boolean) => void;
-  setDate: (date: TRangePicker) => void;
-  setQuickOptions: (quickOptions: QuickOptions) => void;
+  setHasHydrated: (hydrated: boolean) => void
+  setTimeZone: (timeZone: string | undefined) => void
+  setChecked: (checked: boolean) => void
+  setDate: (date: TRangePicker) => void
+  setQuickOptions: (quickOptions: QuickOptions) => void
 }
 
 const initialState: TimezoneState = {
-  timeZone: "America/Chicago",
+  timeZone: 'America/Chicago',
   checked: false,
   hydrated: false,
   quickOptions: QuickOptions.LAST_7_DAYS,
   date: getDateRangeByQuickOption(
     QuickOptions.TODAY,
     undefined,
-    "America/Chicago"
+    'America/Chicago'
   ),
-};
+}
 
 export const useTimezoneStore = create<TimezoneState & TimezoneActions>()(
   persist(
@@ -45,10 +45,10 @@ export const useTimezoneStore = create<TimezoneState & TimezoneActions>()(
       setQuickOptions: (quickOptions) => set({ quickOptions }),
     }),
     {
-      name: "timezone",
+      name: 'timezone',
       onRehydrateStorage: (state) => {
-        return () => state.setHasHydrated(true);
+        return () => state.setHasHydrated(true)
       },
     }
   )
-);
+)

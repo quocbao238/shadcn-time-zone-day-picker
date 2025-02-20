@@ -12,8 +12,8 @@ import {
   startOfYear,
   subDays,
   subMonths,
-} from "date-fns";
-import { TZDate } from "react-day-picker";
+} from 'date-fns'
+import { TZDate } from 'react-day-picker'
 import {
   MONDAY,
   QuickOptions,
@@ -22,19 +22,19 @@ import {
   TQuickOption,
   TRangePicker,
   TStartOfWeek,
-} from "./schema";
+} from './schema'
 
-const INDEX_LAST_7_DAYS = 4;
+const INDEX_LAST_7_DAYS = 4
 
 export const QuickDateRangeOptions = (
   tStartOfWeek?: TStartOfWeek,
   timeZone?: string
 ): TQuickOption[] => {
-  const today = getNewDate(timeZone);
+  const today = getNewDate(timeZone)
 
-  tStartOfWeek = tStartOfWeek ?? MONDAY;
+  tStartOfWeek = tStartOfWeek ?? MONDAY
   if (startOfWeekSchema.safeParse(tStartOfWeek).error) {
-    throw new Error("tStartOfWeek should be {SUNDAY} or {MONDAY} as Day type");
+    throw new Error('tStartOfWeek should be {SUNDAY} or {MONDAY} as Day type')
   }
 
   return [
@@ -140,8 +140,8 @@ export const QuickDateRangeOptions = (
         to: getNewDate(timeZone),
       },
     },
-  ];
-};
+  ]
+}
 
 /// value: QuickOptions
 /// weekConfig defaults to WEEK_CONFIG_FROM_MONDAY
@@ -150,28 +150,28 @@ export const getDateRangeByQuickOption = (
   tStartOfWeek?: TStartOfWeek,
   timeZone?: string
 ): TRangePicker => {
-  const quickDateRanges = QuickDateRangeOptions(tStartOfWeek, timeZone);
+  const quickDateRanges = QuickDateRangeOptions(tStartOfWeek, timeZone)
   return (
     quickDateRanges.find((option) => option.value === value) ??
     quickDateRanges[INDEX_LAST_7_DAYS]
-  ).ranges;
-};
+  ).ranges
+}
 
 export const getRangeUnixTime = (
   value: QuickOptions,
   tStartOfWeek?: TStartOfWeek
 ) => {
-  const quickDateRanges = QuickDateRangeOptions(tStartOfWeek);
+  const quickDateRanges = QuickDateRangeOptions(tStartOfWeek)
   const values = (
     quickDateRanges.find((option) => option.value === value) ??
     quickDateRanges[INDEX_LAST_7_DAYS]
-  ).ranges;
+  ).ranges
 
-  const from = getUnixTime(values.from);
-  const to = getUnixTime(values.to);
+  const from = getUnixTime(values.from)
+  const to = getUnixTime(values.to)
 
-  return { from, to };
-};
+  return { from, to }
+}
 
 export const getQuickOptionByUnixTime = (
   from: number,
@@ -182,7 +182,7 @@ export const getQuickOptionByUnixTime = (
   const ranges = {
     from: fromUnixTime(from),
     to: fromUnixTime(to),
-  };
+  }
 
   return (
     QuickDateRangeOptions(tStartOfWeek, timeZone).find(
@@ -190,51 +190,51 @@ export const getQuickOptionByUnixTime = (
         isSameDay(option.ranges.from, ranges.from) &&
         isSameDay(option.ranges.to, ranges.to)
     )?.value ?? QuickOptions.CUSTOM
-  );
-};
+  )
+}
 
 export const getQuickOptionByRanges = (
   ranges: TRangePicker | undefined,
   tStartOfWeek?: TStartOfWeek,
   timeZone?: string
 ): QuickOptions => {
-  if (!ranges) return QuickOptions.CUSTOM;
+  if (!ranges) return QuickOptions.CUSTOM
   return (
     QuickDateRangeOptions(tStartOfWeek, timeZone).find((option) => {
       return (
         isSameDay(option.ranges.from, ranges.from) &&
         isSameDay(option.ranges.to, ranges.to)
-      );
+      )
     })?.value ?? QuickOptions.CUSTOM
-  );
-};
+  )
+}
 export const formatTzTime = (date: Date, timeZone?: string) => {
   if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
-    return "-";
+    return '-'
   }
-  return date.toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
+  return date.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
     timeZone,
-  });
-};
+  })
+}
 
 export const formatTzDate = (date: Date, timeZone?: string) => {
   if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
-    return "-";
+    return '-'
   }
-  return date.toLocaleDateString("en-US", {
-    month: "short",
-    year: "numeric",
-    day: "numeric",
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    year: 'numeric',
+    day: 'numeric',
     timeZone,
-  });
-};
+  })
+}
 
 export const getNewDate = (timeZone?: string) => {
-  return timeZone ? new TZDate(new Date(), timeZone) : new Date();
-};
+  return timeZone ? new TZDate(new Date(), timeZone) : new Date()
+}
 
 export const getTzDateByUnixTime = (
   unixTime: number,
@@ -242,34 +242,34 @@ export const getTzDateByUnixTime = (
 ) => {
   return timeZone
     ? new TZDate(fromUnixTime(unixTime), timeZone)
-    : fromUnixTime(unixTime);
-};
+    : fromUnixTime(unixTime)
+}
 
 export function getGMTOffset(date: Date) {
-  const offset = date.getTimezoneOffset(); // Get offset in minutes
-  const hours = Math.abs(Math.floor(offset / 60));
-  const minutes = Math.abs(offset % 60);
-  const sign = offset > 0 ? "-" : "+"; // Inverted because getTimezoneOffset() returns the opposite
+  const offset = date.getTimezoneOffset() // Get offset in minutes
+  const hours = Math.abs(Math.floor(offset / 60))
+  const minutes = Math.abs(offset % 60)
+  const sign = offset > 0 ? '-' : '+' // Inverted because getTimezoneOffset() returns the opposite
 
-  return `GMT${sign}${String(hours).padStart(2, "0")}:${String(
+  return `GMT${sign}${String(hours).padStart(2, '0')}:${String(
     minutes
-  ).padStart(2, "0")}`;
+  ).padStart(2, '0')}`
 }
 
 export function getGMTOffsetByTimezone(timezone: string) {
   try {
-    const formatter = new Intl.DateTimeFormat("en-US", {
+    const formatter = new Intl.DateTimeFormat('en-US', {
       timeZone: timezone,
       hour12: false,
-      timeZoneName: "longOffset",
-    });
+      timeZoneName: 'longOffset',
+    })
 
-    const parts = formatter.formatToParts(getNewDate(timezone));
-    const offsetPart = parts.find((part) => part.type === "timeZoneName");
+    const parts = formatter.formatToParts(getNewDate(timezone))
+    const offsetPart = parts.find((part) => part.type === 'timeZoneName')
 
-    if (!offsetPart) return "Invalid Timezone";
+    if (!offsetPart) return 'Invalid Timezone'
 
-    let offset = offsetPart.value.replace("UTC", "GMT");
+    let offset = offsetPart.value.replace('UTC', 'GMT')
 
     // Ensure offset is always in (GMT±HH:MM) format
     /*
@@ -282,11 +282,11 @@ export function getGMTOffsetByTimezone(timezone: string) {
     :00 → Adds :00 to the end.
     */
 
-    return offset.includes(":")
+    return offset.includes(':')
       ? offset
-      : offset.replace(/([+-])(\d)$/, "$10$2:00");
+      : offset.replace(/([+-])(\d)$/, '$10$2:00')
   } catch (error) {
-    return "Invalid Timezone";
+    return 'Invalid Timezone'
   }
 }
 
@@ -295,30 +295,30 @@ export function getTzRangeByType({
   date,
   timeZone,
 }: {
-  type: RangeDayType;
-  date: Date;
-  timeZone?: string;
+  type: RangeDayType
+  date: Date
+  timeZone?: string
 }): TRangePicker {
-  const day = timeZone ? new TZDate(date, timeZone) : date;
-  if (type === "day") {
+  const day = timeZone ? new TZDate(date, timeZone) : date
+  if (type === 'day') {
     return {
       from: startOfDay(day),
       to: endOfDay(day),
-    };
+    }
   }
-  if (type === "month") {
+  if (type === 'month') {
     return {
       from: startOfMonth(day),
       to: endOfMonth(day),
-    };
+    }
   }
 
-  if (type === "year") {
+  if (type === 'year') {
     return {
       from: startOfYear(day),
       to: endOfYear(day),
-    };
+    }
   }
 
-  throw new Error("Invalid range type");
+  throw new Error('Invalid range type')
 }

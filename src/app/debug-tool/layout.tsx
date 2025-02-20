@@ -1,14 +1,14 @@
-import { Metadata } from "next";
+import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "Timezone Converter Tool",
-  description: "A timezone converter tool",
-};
+  title: 'Timezone Converter Tool',
+  description: 'A timezone converter tool',
+}
 
 export default function Layout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
-  return <>{children}</>;
+  return <>{children}</>
 }

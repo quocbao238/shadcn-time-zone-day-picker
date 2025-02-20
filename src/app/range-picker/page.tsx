@@ -1,13 +1,13 @@
-"use client";
-import RangePicker from "@/components/timezone-day-picker";
-import { TimezoneSelector } from "@/components/timezone-day-picker/_components/time-zone-selector";
-import { fullQuickOptions } from "@/components/timezone-day-picker/_data/schema";
-import { Checkbox } from "@/components/ui/checkbox";
-import { TimeZoneCard } from "../components/time-zone-card";
-import { useTimezoneStore } from "@/hooks/use-timezone";
-import FullScreenLoading from "@/components/full-screen-loading";
-import { useEffect } from "react";
-import { getDateRangeByQuickOption } from "@/components/timezone-day-picker/_data/helpers";
+'use client'
+import RangePicker from '@/components/timezone-day-picker'
+import { TimezoneSelector } from '@/components/timezone-day-picker/_components/time-zone-selector'
+import { fullQuickOptions } from '@/components/timezone-day-picker/_data/schema'
+import { Checkbox } from '@/components/ui/checkbox'
+import { TimeZoneCard } from '../components/time-zone-card'
+import { useTimezoneStore } from '@/hooks/use-timezone'
+import FullScreenLoading from '@/components/full-screen-loading'
+import { useEffect } from 'react'
+import { getDateRangeByQuickOption } from '@/components/timezone-day-picker/_data/helpers'
 
 export default function Page() {
   const {
@@ -19,17 +19,15 @@ export default function Page() {
     setChecked,
     setDate,
     quickOptions,
-  } = useTimezoneStore();
+  } = useTimezoneStore()
 
   useEffect(() => {
-    setDate(getDateRangeByQuickOption(quickOptions, undefined, timeZone));
-  }, []);
+    setDate(getDateRangeByQuickOption(quickOptions, undefined, timeZone))
+  }, [])
 
   if (!hydrated) {
-    return <FullScreenLoading />;
+    return <FullScreenLoading />
   }
-
-  console.log("rebuild");
 
   return (
     <div className="flex flex-col gap-4 p-6 w-full">
@@ -45,8 +43,8 @@ export default function Page() {
           disabled={checked}
           value={timeZone}
           onChange={(value) => {
-            setTimeZone(value);
-            setDate(getDateRangeByQuickOption(quickOptions, undefined, value));
+            setTimeZone(value)
+            setDate(getDateRangeByQuickOption(quickOptions, undefined, value))
           }}
         />
 
@@ -55,12 +53,12 @@ export default function Page() {
             checked={checked}
             id="checkbox"
             onCheckedChange={(value: boolean) => {
-              setChecked(value);
+              setChecked(value)
               if (value) {
-                setTimeZone(undefined);
+                setTimeZone(undefined)
                 setDate(
                   getDateRangeByQuickOption(quickOptions, undefined, undefined)
-                );
+                )
               }
             }}
           />
@@ -78,5 +76,5 @@ export default function Page() {
         <TimeZoneCard title="To" currentDate={date.to} timeZone={timeZone} />
       </div>
     </div>
-  );
+  )
 }

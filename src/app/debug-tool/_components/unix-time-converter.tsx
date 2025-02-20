@@ -1,23 +1,23 @@
-import { TimeInfo } from "@/app/components/time-zone-card";
-import { getTzDateByUnixTime } from "@/components/timezone-day-picker/_data/helpers";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { useTimezoneStore } from "@/hooks/use-timezone";
-import { fromUnixTime } from "date-fns";
-import { useState } from "react";
+import { TimeInfo } from '@/app/components/time-zone-card'
+import { getTzDateByUnixTime } from '@/components/timezone-day-picker/_data/helpers'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Separator } from '@/components/ui/separator'
+import { useTimezoneStore } from '@/hooks/use-timezone'
+import { fromUnixTime } from 'date-fns'
+import { useState } from 'react'
 
 export const UnixTimeConverter = () => {
-  const { timeZone } = useTimezoneStore();
-  const [unixTime, setUnixTime] = useState(1739775687);
-  const date = fromUnixTime(unixTime);
-  const tzDate = getTzDateByUnixTime(unixTime, timeZone);
+  const { timeZone } = useTimezoneStore()
+  const [unixTime, setUnixTime] = useState(1739775687)
+  const date = fromUnixTime(unixTime)
+  const tzDate = getTzDateByUnixTime(unixTime, timeZone)
 
   return (
     <Card className="w-full">
       <CardHeader>
         <CardTitle>
-          Unix Timestamp Converter{" "}
+          Unix Timestamp Converter{' '}
           <span className="text-base font-normal text-muted-foreground">
             (Ex: 1739775687)
           </span>
@@ -30,8 +30,8 @@ export const UnixTimeConverter = () => {
             type="number"
             value={unixTime}
             onChange={(e) => {
-              if (e.target.value === "") return setUnixTime(0);
-              return setUnixTime(parseInt(e.target.value));
+              if (e.target.value === '') return setUnixTime(0)
+              return setUnixTime(parseInt(e.target.value))
             }}
           />
         </div>
@@ -51,5 +51,5 @@ export const UnixTimeConverter = () => {
         </div>
       </CardContent>
     </Card>
-  );
-};
+  )
+}

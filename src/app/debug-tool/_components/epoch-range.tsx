@@ -1,16 +1,16 @@
 import {
   RangeDayType,
   TRangePicker,
-} from "@/components/timezone-day-picker/_data/schema";
-import { Separator } from "@/components/ui/separator";
-import { getUnixTime } from "date-fns";
+} from '@/components/timezone-day-picker/_data/schema'
+import { Separator } from '@/components/ui/separator'
+import { getUnixTime } from 'date-fns'
 
 export const EpochRange = ({
   rangeDate,
   type,
 }: {
-  rangeDate: TRangePicker;
-  type: RangeDayType;
+  rangeDate: TRangePicker
+  type: RangeDayType
 }) => {
   return (
     <div className="space-y-2">
@@ -19,26 +19,26 @@ export const EpochRange = ({
           <p className="font-bold text-base">{`Start of ${type}`}</p>
           <Separator />
           <p className="text-muted-foreground">
-            Tz Time:{" "}
+            Tz Time:{' '}
             <span className="text-primary font-bold">
               {rangeDate.from.toString()}
             </span>
           </p>
 
           <p className="text-muted-foreground">
-            UTC Time:{" "}
+            UTC Time:{' '}
             <span className="text-primary font-bold">
               {rangeDate.from.toUTCString()}
             </span>
           </p>
           <p className="text-muted-foreground">
-            ISO Time:{" "}
+            ISO Time:{' '}
             <span className="text-primary font-bold">
               {rangeDate.from.toISOString()}
             </span>
           </p>
           <p className="text-muted-foreground">
-            Unix:{" "}
+            Unix:{' '}
             <span className="text-primary font-bold">
               {getUnixTime(rangeDate.from)}
             </span>
@@ -50,26 +50,26 @@ export const EpochRange = ({
           <p className="font-bold text-base">{`End of ${type}`}</p>
           <Separator />
           <p className="text-muted-foreground">
-            Tz Time:{" "}
+            Tz Time:{' '}
             <span className="text-primary font-bold">
               {rangeDate.to.toString()}
             </span>
           </p>
 
           <p className="text-muted-foreground">
-            UTC Time:{" "}
+            UTC Time:{' '}
             <span className="text-primary font-bold">
               {rangeDate.to.toUTCString()}
             </span>
           </p>
           <p className="text-muted-foreground">
-            ISO Time:{" "}
+            ISO Time:{' '}
             <span className="text-primary font-bold">
               {rangeDate.to.toISOString()}
             </span>
           </p>
           <p className="text-muted-foreground">
-            Unix:{" "}
+            Unix:{' '}
             <span className="text-primary font-bold">
               {getUnixTime(rangeDate.to)}
             </span>
@@ -77,5 +77,5 @@ export const EpochRange = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

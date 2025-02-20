@@ -1,4 +1,4 @@
-import { Calendar, CalendarClock, Settings } from "lucide-react";
+import { Calendar, CalendarClock, Settings } from 'lucide-react'
 
 import {
   Sidebar,
@@ -9,27 +9,27 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar";
-import Link from "next/link";
+} from '@/components/ui/sidebar'
+import Link from 'next/link'
 
 // Menu items.
 const items = [
   {
-    title: "Time Difference",
-    url: "/",
+    title: 'Time Difference',
+    url: '/',
     icon: CalendarClock,
   },
   {
-    title: "DateRange Picker",
-    url: "/range-picker",
+    title: 'DateRange Picker',
+    url: '/range-picker',
     icon: Calendar,
   },
   {
-    title: "Debug Tool",
-    url: "/debug-tool",
+    title: 'Debug Tool',
+    url: '/debug-tool',
     icon: Settings,
   },
-];
+]
 
 export function AppSidebar() {
   return (
@@ -54,5 +54,5 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
-  );
+  )
 }
