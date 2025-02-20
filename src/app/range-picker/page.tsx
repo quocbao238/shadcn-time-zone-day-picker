@@ -32,7 +32,7 @@ export default function Page() {
   console.log("rebuild");
 
   return (
-    <div className="p-6 flex flex-col gap-4">
+    <div className="flex flex-col gap-4 p-6 w-full">
       {!hydrated && <FullScreenLoading />}
       <div className="flex flex-wrap w-full gap-4">
         <RangePicker
