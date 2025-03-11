@@ -84,7 +84,7 @@ function TimeComparison() {
   const currentTime = useCurrentTime()
   
   const tzDate = useMemo(() => 
-    new TZDate(new Date(), timeZone), 
+    new TZDate(currentTime, timeZone), 
     [timeZone, currentTime]
   )
 
