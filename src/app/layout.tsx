@@ -67,7 +67,7 @@ export default function RootLayout({
                 </div>
               </header>
 
-              <main className="flex-1 container py-6 md:py-10 px-4">
+              <main className="flex-1 container pt-6 pb-6  md:py-10 pl-4 pr-4">
                 {children}
               </main>
 
