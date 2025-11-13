@@ -264,27 +264,86 @@ export function getGMTOffsetByTimezone(timezone: string) {
       timeZoneName: 'longOffset',
     })
 
-    const parts = formatter.formatToParts(getNewDate(timezone))
+    const date = getNewDate(timezone)
+    const parts = formatter.formatToParts(date)
     const offsetPart = parts.find((part) => part.type === 'timeZoneName')
 
     if (!offsetPart) return 'Invalid Timezone'
 
     let offset = offsetPart.value.replace('UTC', 'GMT')
 
-    // Ensure offset is always in (GMT±HH:MM) format
-    /*
-    /([+-])(\d)$/ → This is a regular expression (regex):
-    ([+-]) → Matches the + or - sign (indicating the offset direction).
-    (\d)$ → Matches a single digit (a single-digit hour, like GMT+9 or GMT-5).
-    "$10$2:00" → This formats the offset as GMT±0H:00:
-    $1 → Inserts the + or - sign.
-    0$2 → Adds a 0 before the single-digit hour.
-    :00 → Adds :00 to the end.
-    */
+    // Handle case where Intl returns 'GMT' instead of 'GMT+00:00' for UTC+0 timezones
+    // This happens when the timezone is at UTC+0 (like Europe/London in winter, or Africa/Abidjan)
+    if (offset === 'GMT') {
+      // Calculate actual offset by comparing the same instant in UTC and the target timezone
+      // Use the current date to get the current offset (including DST if applicable)
+      const testDate = date instanceof Date ? date : new Date()
 
-    return offset.includes(':')
-      ? offset
-      : offset.replace(/([+-])(\d)$/, '$10$2:00')
+      const utcFormatter = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'UTC',
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+      })
+      const tzFormatter = new Intl.DateTimeFormat('en-US', {
+        timeZone: timezone,
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+      })
+
+      const utcTimeStr = utcFormatter.format(testDate) // Should be "12:00:00"
+      const tzTimeStr = tzFormatter.format(testDate) // Time in target timezone
+
+      // Parse HH:MM:SS format
+      const parseTime = (timeStr: string) => {
+        const [hours, minutes, seconds] = timeStr.split(':').map(Number)
+        return hours * 3600 + minutes * 60 + seconds
+      }
+
+      const utcSeconds = parseTime(utcTimeStr)
+      const tzSeconds = parseTime(tzTimeStr)
+
+      // Calculate difference (tzSeconds - utcSeconds)
+      // If tz is ahead, difference is positive; if behind, negative
+      let diffSeconds = tzSeconds - utcSeconds
+
+      // Handle day boundary crossing (difference might be > 12 hours, meaning it crossed midnight)
+      if (diffSeconds > 12 * 3600) diffSeconds -= 24 * 3600
+      if (diffSeconds < -12 * 3600) diffSeconds += 24 * 3600
+
+      const sign = diffSeconds >= 0 ? '+' : '-'
+      const absSeconds = Math.abs(diffSeconds)
+      const hours = Math.floor(absSeconds / 3600)
+      const minutes = Math.floor((absSeconds % 3600) / 60)
+
+      return `GMT${sign}${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`
+    }
+
+    // Ensure offset is always in (GMT±HH:MM) format
+    // Handle cases like GMT+9 -> GMT+09:00 or GMT-5 -> GMT-05:00
+    if (!offset.includes(':')) {
+      // Match GMT followed by optional sign and digits at the end
+      offset = offset.replace(
+        /(GMT)([+-]?)(\d+)$/,
+        (match, gmt, sign, digits) => {
+          const num = parseInt(digits, 10)
+          const hours = Math.floor(num / 100) || num
+          const minutes = num % 100
+          const finalSign = sign || '+'
+          return `${gmt}${finalSign}${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`
+        }
+      )
+
+      // If still no colon, apply simple regex for single digit hours
+      if (!offset.includes(':')) {
+        offset = offset.replace(/(GMT)([+-])(\d)$/, '$1$2$30:00')
+      }
+    }
+
+    return offset
   } catch (error) {
     return 'Invalid Timezone'
   }

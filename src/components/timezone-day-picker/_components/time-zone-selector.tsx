@@ -16,7 +16,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
-import { timezones } from '../_data/timezone'
+import { timezones, getOffsetByLabel } from '../_data/timezone'
 
 export const TimezoneSelector = ({
   value,
@@ -33,6 +33,7 @@ export const TimezoneSelector = ({
   const selectedTimezone = timezones.find(
     (timezone) => timezone.label.toLowerCase() === value?.toLowerCase()
   )
+  const selectedOffset = value ? getOffsetByLabel(value) : undefined
   return (
     <Popover open={open} onOpenChange={(open) => setOpen(open)}>
       <PopoverTrigger asChild>
@@ -46,7 +47,7 @@ export const TimezoneSelector = ({
           <div className="flex w-full items-center justify-between text-start">
             <div className="block flex-1">
               {value
-                ? `${selectedTimezone?.label} (${selectedTimezone?.offset})`
+                ? `${selectedTimezone?.label} (${selectedOffset ?? ''})`
                 : 'Select Timezone'}
             </div>
             <ChevronsUpDown className="size-3 opacity-50" />
@@ -65,37 +66,40 @@ export const TimezoneSelector = ({
           <CommandList>
             <CommandEmpty>No merchant timezones found.</CommandEmpty>
             <CommandGroup>
-              {timezones.map((timezone) => (
-                <CommandItem
-                  value={timezone.label}
-                  key={timezone.label}
-                  onSelect={(item) => {
-                    setOpen(false)
-                    const selectedTimezone = timezones.find(
-                      (timezone) =>
-                        timezone.label.toLowerCase() === item.toLowerCase()
-                    )?.label
-                    if (!selectedTimezone) return null
-                    onChange(selectedTimezone)
-                  }}
-                  className={cn('flex items-center justify-between', {
-                    'bg-muted font-medium text-accent-foreground':
-                      timezone.label.toLowerCase() ===
-                      (value ?? '').toLowerCase(),
-                  })}
-                >
-                  ({timezone.offset}) {timezone.label}
-                  <Check
-                    className={cn(
-                      'size-4',
-                      timezone.label.toLowerCase() ===
-                        (value ?? '').toLowerCase()
-                        ? 'opacity-100'
-                        : 'opacity-0'
-                    )}
-                  />
-                </CommandItem>
-              ))}
+              {timezones.map((timezone) => {
+                const offset = getOffsetByLabel(timezone.label)
+                return (
+                  <CommandItem
+                    value={timezone.label}
+                    key={timezone.label}
+                    onSelect={(item) => {
+                      setOpen(false)
+                      const selectedTimezone = timezones.find(
+                        (timezone) =>
+                          timezone.label.toLowerCase() === item.toLowerCase()
+                      )?.label
+                      if (!selectedTimezone) return null
+                      onChange(selectedTimezone)
+                    }}
+                    className={cn('flex items-center justify-between', {
+                      'bg-muted font-medium text-accent-foreground':
+                        timezone.label.toLowerCase() ===
+                        (value ?? '').toLowerCase(),
+                    })}
+                  >
+                    ({offset ?? ''}) {timezone.label}
+                    <Check
+                      className={cn(
+                        'size-4',
+                        timezone.label.toLowerCase() ===
+                          (value ?? '').toLowerCase()
+                          ? 'opacity-100'
+                          : 'opacity-0'
+                      )}
+                    />
+                  </CommandItem>
+                )
+              })}
             </CommandGroup>
           </CommandList>
         </Command>

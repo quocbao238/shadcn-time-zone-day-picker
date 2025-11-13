@@ -5,22 +5,49 @@ import { TimezoneSelector } from '@/components/timezone-day-picker/_components/t
 import { UnixTimeConverter } from './_components/unix-time-converter'
 import { ISO8601Converter } from './_components/iso8061-converter'
 import DatePickerConverter from './_components/date-picker-converter'
+import { Wrench } from 'lucide-react'
 
 export default function Page() {
   const { timeZone, hydrated, setTimeZone } = useTimezoneStore()
 
   return (
-    <div className="flex flex-col gap-4 p-6 w-full">
+    <div className="flex flex-col gap-6 p-6 w-full  ">
       {!hydrated && <FullScreenLoading />}
-      <TimezoneSelector
-        disabled={false}
-        value={timeZone}
-        onChange={setTimeZone}
-      />
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+
+      {/* Header Section */}
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-lg bg-primary/10">
+            <Wrench className="size-10 text-primary" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Debug Tools</h1>
+            <p className="text-muted-foreground">
+              Convert and debug timezone-related date formats
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Timezone Selector */}
+      <div className="flex flex-col gap-2">
+        <label className="text-sm font-medium text-muted-foreground">
+          Select Timezone
+        </label>
+        <TimezoneSelector
+          disabled={false}
+          value={timeZone}
+          onChange={setTimeZone}
+        />
+      </div>
+
+      {/* Converter Cards */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
         <ISO8601Converter />
         <UnixTimeConverter />
-        <DatePickerConverter />
+        <div className="lg:col-span-2">
+          <DatePickerConverter />
+        </div>
       </div>
     </div>
   )
