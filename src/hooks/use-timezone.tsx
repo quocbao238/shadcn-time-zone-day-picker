@@ -39,7 +39,7 @@ const initialState: TimezoneState = {
 
 // Cache server snapshot to avoid infinite loop
 const getCachedServerSnapshot = (() => {
-  let cached: TimezoneState & TimezoneActions | null = null
+  let cached: (TimezoneState & TimezoneActions) | null = null
   return (): TimezoneState & TimezoneActions => {
     if (!cached) {
       cached = {
@@ -49,6 +49,7 @@ const getCachedServerSnapshot = (() => {
         setDate: () => {},
         setHasHydrated: () => {},
         setQuickOptions: () => {},
+        setUsMode: () => {},
       }
     }
     return cached
@@ -91,7 +92,6 @@ export const useTimezoneStore = create<TimezoneState & TimezoneActions>()(
         usMode: state.usMode,
       }),
       // Cache server snapshot to avoid infinite loop
-      getServerSnapshot: getCachedServerSnapshot,
       onRehydrateStorage: (state) => {
         return (state, error) => {
           if (error) {
