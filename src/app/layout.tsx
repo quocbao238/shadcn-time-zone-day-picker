@@ -1,8 +1,10 @@
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
-import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
+import { SidebarProvider } from '@/components/ui/sidebar'
 import { AppSidebar } from '@/components/app-sidebar'
+import { AppBar } from '@/components/app-bar'
 import { Metadata } from 'next'
+import { TimezoneHydration } from '@/components/timezone-hydration'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -29,22 +31,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <TimezoneHydration />
         <SidebarProvider>
           <AppSidebar />
-          <div className="flex flex-col w-full relative">
-            <div className="px-6 py-4 sticky top-0 bg-background shadow-sm">
-              <div className="flex flex-row justify-between gap-4">
-                <SidebarTrigger className="h-8 w-8 rounded-md border" />
-                <div className="w-full h-8 flex justify-center items-center">
-                  <p className="text-primary font-bold  md:hidden">
-                    Shadcn Timezone Day Picker
-                  </p>
-                </div>
-                <div className="w-8" />
-              </div>
-            </div>
-            {children}
-          </div>
+          <div className="flex flex-col w-full relative">{children}</div>
         </SidebarProvider>
       </body>
     </html>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import {
   differenceInDays,
   endOfDay,
@@ -29,10 +29,35 @@ export const DateRangePicker = ({
   timeZone?: string
 }) => {
   const [date, setDate] = useState<TRangePicker | undefined>(value)
+  const lastOnChangeRef = useRef<TRangePicker | undefined>(value)
+  const prevValueRef = useRef<TRangePicker | undefined>(value)
 
   useEffect(() => {
-    if (!value) return
-    setDate(value)
+    // Only update if the value prop actually changed (compare timestamps)
+    if (!value) {
+      if (prevValueRef.current !== value) {
+        prevValueRef.current = value
+        setDate(value)
+        lastOnChangeRef.current = value
+      }
+      return
+    }
+    
+    const prevValue = prevValueRef.current
+    if (
+      !prevValue ||
+      !prevValue.from ||
+      !prevValue.to ||
+      !(prevValue.from instanceof Date) ||
+      !(prevValue.to instanceof Date) ||
+      prevValue.from.getTime() !== value.from.getTime() ||
+      prevValue.to.getTime() !== value.to.getTime()
+    ) {
+      prevValueRef.current = value
+      setDate(value)
+      // Update the ref to track what we received from parent
+      lastOnChangeRef.current = value
+    }
   }, [value])
 
   const handleDateChange = (value: Date) => {
@@ -63,8 +88,23 @@ export const DateRangePicker = ({
 
   useEffect(() => {
     if (!date?.from || !date?.to) return
-    onChange(date)
-  }, [onChange, date])
+    // Only call onChange if date actually changed from what we last sent
+    // This prevents infinite loops when parent updates value prop
+    const lastSent = lastOnChangeRef.current
+    if (
+      !lastSent ||
+      !lastSent.from ||
+      !lastSent.to ||
+      !(lastSent.from instanceof Date) ||
+      !(lastSent.to instanceof Date) ||
+      lastSent.from.getTime() !== date.from.getTime() ||
+      lastSent.to.getTime() !== date.to.getTime()
+    ) {
+      lastOnChangeRef.current = date
+      onChange(date)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [date])
 
   return (
     <Popover>

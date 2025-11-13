@@ -24,8 +24,17 @@ export default function Page() {
   } = useTimezoneStore()
 
   useEffect(() => {
-    setDate(getDateRangeByQuickOption(quickOptions, undefined, timeZone))
-  }, [])
+    if (hydrated) {
+      // Sync checked state: if timeZone is set, checked should be false
+      if (timeZone && checked) {
+        setChecked(false)
+      }
+      setDate(getDateRangeByQuickOption(quickOptions, undefined, timeZone))
+    }
+    // Only run when hydrated or quickOptions change, not timeZone
+    // timeZone changes are handled in the TimezoneSelector onChange handler
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hydrated, quickOptions])
 
   if (!hydrated) {
     return <FullScreenLoading />
@@ -35,8 +44,6 @@ export default function Page() {
 
   return (
     <div className="flex flex-col gap-6 p-6 w-full">
-      {!hydrated && <FullScreenLoading />}
-
       {/* Header Section */}
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-3">
@@ -80,10 +87,15 @@ export default function Page() {
                 value={timeZone}
                 onChange={(value) => {
                   setTimeZone(value)
+                  // When a specific timezone is selected, uncheck "Use Computer Timezone"
+                  if (checked) {
+                    setChecked(false)
+                  }
                   setDate(
                     getDateRangeByQuickOption(quickOptions, undefined, value)
                   )
                 }}
+                showUSModeSwitch={true}
               />
             </div>
           </div>

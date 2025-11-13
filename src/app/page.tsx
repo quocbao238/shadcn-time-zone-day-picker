@@ -7,10 +7,12 @@ import { useTimezoneStore } from '@/hooks/use-timezone'
 import { TimezoneSelector } from '@/components/timezone-day-picker/_components/time-zone-selector'
 import { TimeZoneCard } from './components/time-zone-card'
 import FullScreenLoading from '@/components/full-screen-loading'
-import { Clock, Globe, ArrowRightLeft } from 'lucide-react'
+import { Clock, Globe, ArrowRightLeft, Monitor } from 'lucide-react'
+import { Checkbox } from '@/components/ui/checkbox'
 
 export default function Page() {
-  const { timeZone, checked, setTimeZone, hydrated } = useTimezoneStore()
+  const { timeZone, checked, setTimeZone, setChecked, hydrated } =
+    useTimezoneStore()
 
   return (
     <div className="flex flex-col gap-6 p-6 w-full">
@@ -18,6 +20,7 @@ export default function Page() {
         timeZone={timeZone}
         checked={checked}
         setTimeZone={setTimeZone}
+        setChecked={setChecked}
         hydrated={hydrated}
       />
     </div>
@@ -28,11 +31,13 @@ const TimeNow = ({
   timeZone,
   checked,
   setTimeZone,
+  setChecked,
   hydrated,
 }: {
   timeZone?: string
   checked: boolean
-  setTimeZone: (timeZone: string) => void
+  setTimeZone: (timeZone: string | undefined) => void
+  setChecked: (checked: boolean) => void
   hydrated?: boolean
 }) => {
   const [now, setNow] = useState(new Date())
@@ -46,6 +51,8 @@ const TimeNow = ({
   }, [])
 
   const nowTz = new TZDate(new Date(), timeZone)
+  const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+
   return (
     <div className="flex flex-col gap-6">
       {!hydrated && <FullScreenLoading />}
@@ -76,8 +83,39 @@ const TimeNow = ({
         <TimezoneSelector
           disabled={checked}
           value={timeZone}
-          onChange={setTimeZone}
+          onChange={(value) => {
+            setTimeZone(value)
+            // When a specific timezone is selected, uncheck "Use Computer Timezone"
+            if (checked) {
+              setChecked(false)
+            }
+          }}
+          showUSModeSwitch={true}
         />
+      </div>
+
+      {/* Use Computer Timezone Checkbox */}
+      <div className="flex items-center gap-3 p-4 rounded-lg border bg-muted/50">
+        <Checkbox
+          checked={checked}
+          id="checkbox-time-diff"
+          onCheckedChange={(value: boolean) => {
+            setChecked(value)
+            if (value) {
+              setTimeZone(undefined)
+            }
+          }}
+        />
+        <label
+          htmlFor="checkbox-time-diff"
+          className="text-sm font-medium leading-none cursor-pointer flex items-center gap-2 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+        >
+          <Monitor className="h-4 w-4 text-muted-foreground" />
+          <span>Use Computer Timezone</span>
+          <span className="text-xs text-muted-foreground font-normal">
+            ({localTimezone})
+          </span>
+        </label>
       </div>
 
       {/* Time Cards */}
